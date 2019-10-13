@@ -2,15 +2,20 @@
 
 namespace Illustrate\Concept;
 
-use Illustrate\Concept\Middleware\TestAbort;
+use Illustrate\Concept\Commands\GeneratorCommand;
+use Illustrate\Concept\Middleware\EncryptSession;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function boot()
     {
-        $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         $router = $this->app['router'];
-        $router->pushMiddlewareToGroup('web', TestAbort::class);
+        $router->pushMiddlewareToGroup('web', EncryptSession::class);
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                GeneratorCommand::class,
+            ]);
+        }
     }
 
     public function register()
