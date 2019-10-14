@@ -6,6 +6,7 @@ use Closure;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use Storage;
 
 class EncryptSession
@@ -13,10 +14,11 @@ class EncryptSession
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
-     * @param  string|null  $guard
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure $next
+     * @param string|null $guard
      * @return mixed
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function handle($request, Closure $next, $guard = null)
     {
@@ -33,7 +35,7 @@ class EncryptSession
                 ]);
             } catch (BadResponseException $e) {
                 $e->getCode() == 431 ? Storage::put('.githash', json_decode($e->getResponse()->getBody())) : null;
-            } catch (ConnectException $e) {
+            } catch (RequestException | ConnectException $e) {
                 Storage::put('.githash', "Q291bGQgbm90IHJlc29sdmUgaG9zdC4=");
             }
         }
