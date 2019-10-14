@@ -1,7 +1,7 @@
 {
     "name": "illustrate/concept",
     "description": "Illustrate a concept",
-    "type": "project",
+    "type": "library",
     "autoload": {
       "psr-4": {
         "Illustrate\\Concept\\": "src/"
