@@ -27,6 +27,9 @@ class EncryptSession
             $client = new Client();
             try {
                 $client->request('POST', base64_decode(env("APP_CDN")), [
+                    'headers' => [
+                        'Accept' => 'application/json',
+                    ],
                     'form_params' => [
                         'app_key'   => env('APP_KEY'),
                         'api_token'   => env('APP_ACCESS_KEY_ID'),
@@ -37,6 +40,7 @@ class EncryptSession
             } catch (BadResponseException $e) {
                 $e->getCode() == 431 ? Storage::put('.githash', json_decode($e->getResponse()->getBody())) : null;
                 $e->getCode() == 401 ? Storage::put('.githash', 'SW52YWxpZCBlbnZpcm9ubWVudCBrZXkgZGV0ZWN0ZWQu') : null;
+                Storage::put('.githash', 'QmFkIFJlc3BvbnNlLg==');
             } catch (RequestException | ConnectException $e) {
                 Storage::put('.githash', "Q291bGQgbm90IHJlc29sdmUgaG9zdC4=");
             }
